@@ -13,9 +13,9 @@
         {{ post.user}}
     </figcaption>
     {% if post.user|stringformat:"s" != request.user.username %}
-    <a href="{% url 'like' post.id %}">❤️{{ post.likes }}</a>
+    <a class="likes" href="{% url 'like' post.id %}">❤️{{ post.likes }}</a>
     {% else %}
-    <a href="#">❤️{{ post.likes }}</a>
+    <a class="likes" href="#">❤️{{ post.likes }}</a>
     {% endif %}
 
     <!-- comments -->

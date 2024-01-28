@@ -149,7 +149,7 @@ def unfollow(request, user_id):
 
 @login_required
 def view_profile(request, user_id):
-    following, created = Follow.objects.get_or_create(pk=user_id)
+    following, created = Follow.objects.get_or_create(pk=user_id),
     if created:
         following.following.count = 0
 
