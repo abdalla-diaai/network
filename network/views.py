@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib import messages
 from django.shortcuts import render
 from django.urls import reverse
@@ -201,11 +201,14 @@ def view_following(request):
     )
 
 def like(request, post_id):
-    post = Post.objects.get(pk=post_id)
-    if request.user not in post.reactions.all():
-        post.reactions.add(request.user)
-        post.likes += 1
-        post.save()
-    return HttpResponseRedirect(reverse("allposts"))
+    posts = Post.objects.get(pk=post_id)
+    if request.user not in posts.reactions.all():
+        posts.reactions.add(request.user)
+        posts.likes += 1
+        posts.save()
+    # return HttpResponseRedirect(reverse("allposts"))
+    return JsonResponse(posts.serialize() , safe=False)
+
+
         
  
