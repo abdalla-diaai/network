@@ -11,8 +11,8 @@ class StylishForm(ModelForm):
         for field in self.fields.values():
             field.widget.attrs.update({"class": "form-control"})
 
-class ListingPost(StylishForm):
-    
+
+class PostForm(StylishForm):
     class Meta:
         model = Post
         fields = ["body"]
@@ -25,3 +25,16 @@ class ListingPost(StylishForm):
             "body": " ",
         }
 
+
+class CommentForm(StylishForm):
+    class Meta:
+        model = Comment
+        fields = ["comment_body"]
+        widgets = {
+            "owner": forms.HiddenInput(),
+            # adjust textarea field
+        }
+        # remove label field
+        labels = {
+            "body": " ",
+        }

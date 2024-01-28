@@ -1,34 +1,41 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
+{% if user.is_authenticated %}
+
+<div class="card">
+    <div class="card-body">
+        <h5 h5 class="card-title">{{ request.user.username }}</h5>
+        <p>{{ user.followers.count }} Followers</p>
+        <p>{{ following.following.count }} Following</p>
+    </div>
+</div>
 {% for user in all_users %}
-<div>
-    <h5>{{ user.username }}</h5>
-    {% if user|stringformat:"s" != request.user.username %}
-    <a type="button" class="btn btn-primary btn-sm" href="{% url 'view_profile' user.id %}">View Profile</a>
-    <a type="button" class="btn btn-primary btn-sm" href="{% url 'follow' user.id %}">Follow</a>
-    <a type="button" class="btn btn-warning btn-sm" href="{% url 'unfollow' user.id %}">Unfollow</a>
+<div class="card">
+    <div class="card-body">
+        <h5 h5 class="card-title">{{ user.username }}</h5>
+        <a type="button" class="btn btn-primary btn-sm" href="{% url 'view_profile' user.id %}">View Profile</a>
+        <a type="button" class="btn btn-primary btn-sm" href="{% url 'follow' user.id %}">Follow</a>
+        <a type="button" class="btn btn-warning btn-sm" href="{% url 'unfollow' user.id %}">Unfollow</a>
+    </div>
 </div>
-
-{% else %}
-<span>{{ user.followers.count }} Followers</span>
-<span>{{ followers.following.count }} Following</span>
-{% endif %}
-
 {% endfor %}
-
-<div class="comments">
-    {% if user.is_authenticated %}
-    {% for post in posts.all %}
-    <blockquote class="blockquote">
-        {{ post.body | linebreaks }}
-    </blockquote>
-    <figcaption class="blockquote-footer">
-        {{ post.created }}
-        {{ post.user}}
-    </figcaption>
-    {% endfor %}
-
-    {% endif %}
+<div id="feed">
+    <h4>My Feed</h4>
+    <div class="comments">
+        {% for post in posts.all %}
+        {% if post.user|stringformat:"s" == request.user.username %}
+        <blockquote class="blockquote">
+            {{ post.body | linebreaks }}
+        </blockquote>
+        <figcaption class="blockquote-footer">
+            {{ post.created }}
+            {{ post.user}}
+        </figcaption>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    </div>
 </div>
+
 {% endblock %}

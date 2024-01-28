@@ -12,11 +12,10 @@ from .forms import *
 
 def index(request):
     posts = Post.objects.order_by("-created_at")
-
     return render(
         request,
         "network/index.html",
-        {"posts": posts, "form": ListingPost()},
+        {"posts": posts, "form": PostForm()},
     )
 
 
@@ -76,14 +75,14 @@ def register(request):
 @login_required
 def post(request):
     if request.method == "POST":
-        form = ListingPost(request.POST)
+        form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
             post.user = request.user
             post.save()
             return HttpResponseRedirect(reverse("index"))
     else:
-        form = ListingPost(request.POST)
+        form = PostForm(request.POST)
     return render(
         request,
         "network/index.html",
@@ -96,27 +95,27 @@ def post(request):
 @login_required
 def allposts(request):
     posts = Post.objects.order_by("-created_at")
-    paginator = Paginator(posts, 1)  
+    paginator = Paginator(posts, 10)  
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     return render(
         request,
         "network/posts.html",
         {"page_obj": page_obj,
-         "paginator": paginator}
+         "paginator": paginator, 
+         "form": CommentForm()}
     )
 
 
 @login_required
 def profile(request):
     posts = Post.objects.all()
-    current_users = User.objects.all()
+    current_users = User.objects.exclude(pk=request.user.id)
     user_following, __ = Follow.objects.get_or_create(pk=request.user.id)
-    print(user_following.following.count())
     return render(
         request,
         "network/profile.html",
-        {"all_users": current_users, "posts": posts, "followers": user_following},
+        {"all_users": current_users, "posts": posts, "following": user_following},
     )
 
 
@@ -159,3 +158,38 @@ def view_profile(request, user_id):
         },
     )
 
+@login_required
+def comment(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    comment, __ = Comment.objects.get_or_create(pk=post_id)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.comment_owner = request.user
+            comment.save()
+
+            post.comments.add(comment)
+            return HttpResponseRedirect(reverse("allposts"))
+    else:
+        form = CommentForm(request.POST)
+    return render(
+        request,
+        "network/posts.html",
+        {
+            "post": post,
+            "comments": comment,
+            "form": form,
+        },
+    )
+
+def view_following(request):
+    following = Follow.objects.filter(pk=request.user.id)
+    return render(
+        request,
+        "network/following.html",
+        {
+            "following": following,
+            "posts": Post.objects.all()
+        },
+    )

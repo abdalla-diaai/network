@@ -1,22 +1,22 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-<h2>All Posts</h2>
-{% if user.is_authenticated %}
-<div class="comments">
-    {% for post in posts.all %}
+<h2>Followers Posts</h2>
+{% for follow in following.all %}
+{% for user in follow.following.all %}
 
-    <blockquote class="blockquote">
-        {{ post.body | linebreaks }}
-    </blockquote>
-    <figcaption class="blockquote-footer">
-        {{ post.created }}
-        {{ post.user}}
-        {{ post.following }}
-    </figcaption>
-    {% endfor %}
-</div>
-
+{% for post in posts.all %}
+{% if post.user == user %}
+<blockquote class="blockquote">
+    {{ post.body | linebreaks }}
+</blockquote>
+<figcaption class="blockquote-footer">
+    {{ post.created }}
+    {{ post.user}}
+</figcaption>
 {% endif %}
+{% endfor %}
+{% endfor %}
+{% endfor %}
 
 {% endblock %}
