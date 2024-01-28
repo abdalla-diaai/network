@@ -96,14 +96,14 @@ def post(request):
 @login_required
 def allposts(request):
     posts = Post.objects.order_by("-created_at")
-    paginator = Paginator(posts, 10)  # Show 25 contacts per page.
-
+    paginator = Paginator(posts, 10)  
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     return render(
         request,
         "network/posts.html",
-        {"page_obj": page_obj}
+        {"page_obj": page_obj,
+         "paginator": paginator}
     )
 
 
