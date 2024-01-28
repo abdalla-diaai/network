@@ -1,0 +1,22 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<h2>All Posts</h2>
+{% if user.is_authenticated %}
+<div class="comments">
+    {% for post in posts.all %}
+
+    <blockquote class="blockquote">
+        {{ post.body | linebreaks }}
+    </blockquote>
+    <figcaption class="blockquote-footer">
+        {{ post.created }}
+        {{ post.user}}
+        {{ post.following }}
+    </figcaption>
+    {% endfor %}
+</div>
+
+{% endif %}
+
+{% endblock %}

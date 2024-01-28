@@ -1,0 +1,34 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+{% for user in all_users %}
+<div>
+    <h5>{{ user.username }}</h5>
+    {% if user|stringformat:"s" != request.user.username %}
+    <a type="button" class="btn btn-primary btn-sm" href="{% url 'view_profile' user.id %}">View Profile</a>
+    <a type="button" class="btn btn-primary btn-sm" href="{% url 'follow' user.id %}">Follow</a>
+    <a type="button" class="btn btn-warning btn-sm" href="{% url 'unfollow' user.id %}">Unfollow</a>
+</div>
+
+{% else %}
+<span class="badge bg-primary">Followers: {{ user.followers.count }}</span>
+<span class="badge bg-secondary">Following: {{ followers.following.count }}</span>
+{% endif %}
+
+{% endfor %}
+
+<div class="comments">
+    {% if user.is_authenticated %}
+    {% for post in posts.all %}
+    <blockquote class="blockquote">
+        {{ post.body | linebreaks }}
+    </blockquote>
+    <figcaption class="blockquote-footer">
+        {{ post.created }}
+        {{ post.user}}
+    </figcaption>
+    {% endfor %}
+
+    {% endif %}
+</div>
+{% endblock %}

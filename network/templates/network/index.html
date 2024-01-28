@@ -1,0 +1,38 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+{% if user.is_authenticated %}
+<section id="form-section">
+    <h2>New Post</h2>
+    <form action="{% url 'post' %}" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-text">
+            <div>{{ field }}</div>
+        </div>
+        {% endfor %}
+        <input id="post-button" class="btn btn-primary" type="submit" value="Post" name="save">
+    </form>
+</section>
+<hr class="hr weather-hr" />
+<section id="posts-section">
+    <h4>All Posts</h4>
+    <div class="row card-body">
+        <!-- posts -->
+        {% for post in posts.all %}
+        {% if post.user|stringformat:"s" == request.user.username %}
+        <div class="comment">
+            <blockquote class="blockquote">
+                {{ post.body | linebreaks }}
+            </blockquote>
+            <figcaption class="blockquote-footer">
+                {{ post.created }}
+                {{ post.user }}
+            </figcaption>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

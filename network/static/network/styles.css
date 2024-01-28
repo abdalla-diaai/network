@@ -1,0 +1,19 @@
+.navbar {
+    margin: 20px;
+}
+
+.form-group {
+    margin: 5px 0 5px 0;
+}
+
+#post-button {
+    margin: 10px 0 10px 0;
+}
+
+#form-section, #post-section {
+    padding: 10px;
+}
+
+.comments {
+    margin: 20px;
+}
