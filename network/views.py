@@ -96,7 +96,7 @@ def post(request):
 @login_required
 def allposts(request):
     posts = Post.objects.order_by("-created_at")
-    paginator = Paginator(posts, 10)  
+    paginator = Paginator(posts, 1)  
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     return render(
