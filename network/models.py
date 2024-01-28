@@ -32,7 +32,8 @@ class Post(TimeStampedModel):
     created = TimeStampedModel.created_at
     body = models.CharField(max_length=300)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
-
+    likes = models.IntegerField(blank=True)
+    reactions = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="user_reactions", symmetrical=False)
     def __str__(self) -> str:
         return f"{self.user} {self.body}"
 
@@ -51,3 +52,4 @@ class Comment(TimeStampedModel):
 
     def __str__(self) -> str:
         return f"{self.comment_owner} {self.comment_body}"
+

@@ -79,6 +79,7 @@ def post(request):
         if form.is_valid():
             post = form.save(commit=False)
             post.user = request.user
+            post.likes = 0
             post.save()
             return HttpResponseRedirect(reverse("index"))
     else:
@@ -103,7 +104,8 @@ def allposts(request):
         "network/posts.html",
         {"page_obj": page_obj,
          "paginator": paginator, 
-         "form": CommentForm()}
+         "form": CommentForm(),
+         }
     )
 
 
@@ -147,6 +149,10 @@ def unfollow(request, user_id):
 
 @login_required
 def view_profile(request, user_id):
+    following, created = Follow.objects.get_or_create(pk=user_id)
+    if created:
+        following.following.count = 0
+
     return render(
         request,
         "network/view.html",
@@ -154,7 +160,7 @@ def view_profile(request, user_id):
             "posts": Post.objects.filter(pk=user_id),
             "username": User.objects.get(pk=user_id),
             "followers": User.objects.get(pk=user_id).followers.count(),
-            "following": Follow.objects.get(pk=user_id),
+            "following": following
         },
     )
 
@@ -193,3 +199,13 @@ def view_following(request):
             "posts": Post.objects.all()
         },
     )
+
+def like(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    if request.user not in post.reactions.all():
+        post.reactions.add(request.user)
+        post.likes += 1
+        post.save()
+    return HttpResponseRedirect(reverse("allposts"))
+        
+ 

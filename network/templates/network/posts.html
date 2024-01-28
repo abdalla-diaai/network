@@ -12,6 +12,11 @@
         {{ post.created }}
         {{ post.user}}
     </figcaption>
+    {% if post.user|stringformat:"s" != request.user.username %}
+    <a href="{% url 'like' post.id %}">❤️{{ post.likes }}</a>
+    {% else %}
+    <a href="#">❤️{{ post.likes }}</a>
+    {% endif %}
 
     <!-- comments -->
     <h6>{{ post.comments.count }} Comments</h6>
