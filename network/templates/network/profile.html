@@ -11,8 +11,8 @@
 </div>
 
 {% else %}
-<span class="badge bg-primary">Followers: {{ user.followers.count }}</span>
-<span class="badge bg-secondary">Following: {{ followers.following.count }}</span>
+<span>{{ user.followers.count }} Followers</span>
+<span>{{ followers.following.count }} Following</span>
 {% endif %}
 
 {% endfor %}

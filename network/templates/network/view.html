@@ -5,8 +5,8 @@
 {% if user.is_authenticated %}
 <div>
     <h4>{{ username }}</h4>
-    <span class="badge bg-primary">Followers: {{ followers }}</span>
-    <span class="badge bg-secondary">Following: {{ following.following.count }}</span>
+    <figcaption>{{ followers }} Followers</figcaption>
+    <span>{{ following.following.count }} Following</span>
 </div>
 
 <div class="comments">

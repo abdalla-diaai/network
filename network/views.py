@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from .models import User
 from .forms import *
 
@@ -95,12 +96,14 @@ def post(request):
 @login_required
 def allposts(request):
     posts = Post.objects.order_by("-created_at")
+    paginator = Paginator(posts, 10)  # Show 25 contacts per page.
+
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
     return render(
         request,
         "network/posts.html",
-        {
-            "posts": posts,
-        },
+        {"page_obj": page_obj}
     )
 
 
