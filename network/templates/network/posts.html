@@ -1,4 +1,5 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
 <h2>All Posts</h2>
@@ -13,9 +14,9 @@
         {{ post.user}}
     </figcaption>
     {% if post.user|stringformat:"s" != request.user.username %}
-    <a class="likes" href="{% url 'like' post.id %}">❤️{{ post.likes }}</a>
+    <a id="likes" href="{% url 'like' post.id %}">❤️{{ post.likes }}</a>
     {% else %}
-    <a class="likes" href="#">❤️{{ post.likes }}</a>
+    <a id="mylikes" href="#">❤️{{ post.likes }}</a>
     {% endif %}
 
     <!-- comments -->
@@ -29,6 +30,7 @@
             {{ comment.comment_owner}}
         </figcaption>
     {% endfor %}
+    {% if post.user|stringformat:"s" != request.user.username %}
 
     <form action="{% url 'comment' post.id %}" , method="post">
         {% csrf_token %}
@@ -39,6 +41,7 @@
         {% endfor %}
         <input id="post-button" class="btn btn-primary btn-sm" type="submit" value="Comment" name="save">
     </form>
+    {% endif %}
     {% endfor %}
 </div>
 
@@ -65,8 +68,11 @@
 </nav>
 {% endif %}
 {% endif %}
-{% endblock %}
 
 {% block script %}
-    <script src="/network/static/network/script.js"></script>
+    <script src= "{% static 'network/script.js' %}"></script>
 {% endblock %}
+
+{% endblock %}
+
+

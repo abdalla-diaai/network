@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -129,15 +130,8 @@ def follow(request, user_id):
         user_to_follow = User.objects.get(pk=user_id)
         user_to_follow.followers.add(request.user.id)
         following_model.following.add(user_to_follow)
-        return render(
-            request,
-            "network/following.html",
-            {
-                "posts": user_posts,
-                "followers": user_to_follow.followers.count(),
-                "following": Follow.objects.get(pk=user_id),
-            },
-        )
+        return HttpResponseRedirect(reverse("following"))
+
 
 @login_required
 def unfollow(request, user_id):
@@ -149,7 +143,9 @@ def unfollow(request, user_id):
 
 @login_required
 def view_profile(request, user_id):
-    following, created = Follow.objects.get_or_create(pk=user_id),
+    following, created = Follow.objects.get_or_create(pk=user_id)
+    posts = Post.objects.order_by("-created_at")
+    followers_count = User.objects.get(pk=user_id).followers.count()
     if created:
         following.following.count = 0
 
@@ -157,9 +153,9 @@ def view_profile(request, user_id):
         request,
         "network/view.html",
         {
-            "posts": Post.objects.filter(pk=user_id),
+            "posts": posts,
             "username": User.objects.get(pk=user_id),
-            "followers": User.objects.get(pk=user_id).followers.count(),
+            "followers": followers_count,
             "following": following
         },
     )
@@ -200,15 +196,41 @@ def view_following(request):
         },
     )
 
-def like(request, post_id):
-    posts = Post.objects.get(pk=post_id)
-    if request.user not in posts.reactions.all():
-        posts.reactions.add(request.user)
-        posts.likes += 1
-        posts.save()
-    # return HttpResponseRedirect(reverse("allposts"))
-    return JsonResponse(posts.serialize() , safe=False)
-
+# def like(request, post_id):
+#     posts = Post.objects.get(pk=post_id)
+#     if request.user not in posts.reactions.all():
+#         posts.reactions.add(request.user)
+#         posts.likes += 1
+#         posts.save()
+#     return HttpResponseRedirect(reverse("allposts"))
 
         
- 
+@login_required
+def like(request, post_id):
+
+    # Query for requested post
+    try:
+        post = Post.objects.get(pk=post_id)
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Post not found."}, status=404)
+
+    # Return post contents
+    if request.method == "GET":
+        return JsonResponse(post.serialize())
+
+    # Update post likes
+    elif request.method == "POST":
+        data = json.loads(request.body)
+        print(data)
+        if data.get("likes") is not None:
+            post.likes = data["likes"]
+        post.save()
+        return HttpResponse(status=204)
+
+    # Post must be via GET or PUT
+    else:
+        return JsonResponse({
+            "error": "GET or PUT request required."
+        }, status=400)
+    
+

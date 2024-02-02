@@ -14,6 +14,11 @@
     {{ post.created }}
     {{ post.user}}
 </figcaption>
+{% if post.user|stringformat:"s" != request.user.username %}
+<a class="likes" href="{% url 'like' post.id %}">❤️{{ post.likes }}</a>
+{% else %}
+<a class="likes" href="#">❤️{{ post.likes }}</a>
+{% endif %}
 {% endif %}
 {% endfor %}
 {% endfor %}

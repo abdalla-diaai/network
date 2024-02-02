@@ -36,6 +36,7 @@ class Post(TimeStampedModel):
     reactions = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="user_reactions", symmetrical=False)
     def __str__(self) -> str:
         return f"{self.user} {self.body}"
+    
     def serialize(self):
         return {
             "id": self.id,
