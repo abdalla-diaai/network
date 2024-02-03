@@ -196,41 +196,13 @@ def view_following(request):
         },
     )
 
-# def like(request, post_id):
-#     posts = Post.objects.get(pk=post_id)
-#     if request.user not in posts.reactions.all():
-#         posts.reactions.add(request.user)
-#         posts.likes += 1
-#         posts.save()
-#     return HttpResponseRedirect(reverse("allposts"))
+def like(request, post_id):
+    posts = Post.objects.get(pk=post_id)
+    if request.user not in posts.reactions.all():
+        posts.reactions.add(request.user)
+        posts.likes += 1
+        posts.save()
+    return HttpResponseRedirect(reverse("allposts"))
 
         
-@login_required
-def like(request, post_id):
-
-    # Query for requested post
-    try:
-        post = Post.objects.get(pk=post_id)
-    except Post.DoesNotExist:
-        return JsonResponse({"error": "Post not found."}, status=404)
-
-    # Return post contents
-    if request.method == "GET":
-        return JsonResponse(post.serialize())
-
-    # Update post likes
-    elif request.method == "POST":
-        data = json.loads(request.body)
-        print(data)
-        if data.get("likes") is not None:
-            post.likes = data["likes"]
-        post.save()
-        return HttpResponse(status=204)
-
-    # Post must be via GET or PUT
-    else:
-        return JsonResponse({
-            "error": "GET or PUT request required."
-        }, status=400)
     
-
