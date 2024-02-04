@@ -12,12 +12,16 @@
     <figcaption class="blockquote-footer">
         {{ post.created }}
         {{ post.user}}
+        {% if post.user|stringformat:"s" != request.user.username %}
+    
+        <form id="like-form" method="PUT" action="{% url 'like' post.id %}">
+            <!-- Your other form fields if any -->
+            <button data-id={{ post.id }} type="button" class="like-button">Like</button>
+        </form>
+        {% endif %}
+        <span id="current-likes">{{ post.likes }}</span>
     </figcaption>
-    {% if post.user|stringformat:"s" != request.user.username %}
-    <a class="likes" href="{% url 'like' post.id %}">❤️{{ post.likes }}</a>
-    {% else %}
-    <a class="likes" href="#">❤️{{ post.likes }}</a>
-    {% endif %}
+   
 
     <!-- comments -->
     <h6>{{ post.comments.count }} Comments</h6>

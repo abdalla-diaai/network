@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from .models import User
 from .forms import *
@@ -196,13 +197,25 @@ def view_following(request):
         },
     )
 
+@csrf_exempt       
 def like(request, post_id):
-    posts = Post.objects.get(pk=post_id)
-    if request.user not in posts.reactions.all():
-        posts.reactions.add(request.user)
-        posts.likes += 1
-        posts.save()
-    return HttpResponseRedirect(reverse("allposts"))
+    try:
+        post = Post.objects.get(pk=post_id)
+        print(post)
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Post not found."}, status=404)
 
-        
-    
+    if request.method == "GET":
+        return JsonResponse(post.serialize())
+
+    elif request.method == "PUT":
+        data = json.loads(request.body)
+        if data.get("likes") is not None:
+            post.likes = data["likes"]
+        post.save()
+        return HttpResponse(status=204)
+
+    else:
+        return JsonResponse({
+            "error": "GET or PUT request required."
+        }, status=400)
