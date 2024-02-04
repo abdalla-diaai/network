@@ -10,7 +10,8 @@
     margin: 10px 0 10px 0;
 }
 
-#form-section, #post-section {
+#form-section,
+#post-section {
     padding: 10px;
 }
 
@@ -24,4 +25,15 @@
 
 a {
     text-decoration: none;
+}
+
+.like-button {
+    padding: 0;
+    border: none;
+    background: none;
+    text-decoration: none;
+}
+
+.like-button:hover {
+    cursor: pointer;
 }

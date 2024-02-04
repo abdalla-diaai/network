@@ -13,26 +13,28 @@
         {{ post.created }}
         {{ post.user}}
         {% if post.user|stringformat:"s" != request.user.username %}
-    
+
         <form id="like-form" method="PUT" action="{% url 'like' post.id %}">
             <!-- Your other form fields if any -->
-            <button data-id={{ post.id }} type="button" class="like-button">Like</button>
+            <button data-id={{ post.id }} type="button" class="like-button">❤️ <span id="current-likes">{{ post.likes }}</span></button>
         </form>
+        {% else %}
+        <div><span>❤️ {{ post.likes }}</span></div>
         {% endif %}
-        <span id="current-likes">{{ post.likes }}</span>
+        
     </figcaption>
-   
+
 
     <!-- comments -->
     <h6>{{ post.comments.count }} Comments</h6>
     {% for comment in post.comments.all %}
-        <p class="blockquote">
-            {{ comment.comment_body | linebreaks }}
-        </p>
-        <figcaption class="blockquote-footer">
-            {{ comment.comment_created }}
-            {{ comment.comment_owner}}
-        </figcaption>
+    <p class="blockquote">
+        {{ comment.comment_body | linebreaks }}
+    </p>
+    <figcaption class="blockquote-footer">
+        {{ comment.comment_created }}
+        {{ comment.comment_owner}}
+    </figcaption>
     {% endfor %}
     {% if post.user|stringformat:"s" != request.user.username %}
 
@@ -74,9 +76,7 @@
 {% endif %}
 
 {% block script %}
-    <script src= "{% static 'network/script.js' %}"></script>
+<script src="{% static 'network/script.js' %}"></script>
 {% endblock %}
 
 {% endblock %}
-
-
