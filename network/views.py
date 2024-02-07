@@ -186,6 +186,8 @@ def comment(request, post_id):
         },
     )
 
+@login_required
+
 def view_following(request):
     following = Follow.objects.filter(pk=request.user.id)
     return render(
@@ -197,7 +199,7 @@ def view_following(request):
         },
     )
 
-@csrf_exempt       
+@login_required
 def like(request, post_id):
     try:
         post = Post.objects.get(pk=post_id)
@@ -226,23 +228,24 @@ def like(request, post_id):
             "error": "GET or PUT request required."
         }, status=400)
 
+@login_required
 def edit(request, post_id):
     try:
         post = Post.objects.get(pk=post_id)
-        
     except Post.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=404)
 
     if request.method == "GET":
         return JsonResponse(post.serialize())
 
-    elif request.method == "POST":
+    elif request.method == "PUT":
         data = json.loads(request.body)
-        if data.get("body") is not None:
-            post.body = data["body"]
-            print(post.body)
+        updated_body = data.get("body")
+        if updated_body is not None:
+            post.body = updated_body
         post.save()
         return HttpResponse(status=204)
+
 
     else:
         return JsonResponse({

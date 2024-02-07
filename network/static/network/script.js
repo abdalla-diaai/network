@@ -1,14 +1,18 @@
-    // Edit post function
-    function editPost(postId) {
-        fetch(`/edit/${postId}`, {
-            method: 'PUT',
-            body: JSON.stringify({
-                body: $(`#post-body-${postId}`).val
+// Edit post function
+$('.post-edit').on("click", function (event) {
+    event.preventDefault();
+
+    var editId = $(this).attr("data-edit");
+    fetch(`/edit/${editId}`, {
+        method: 'PUT',
+        body:
+            JSON.stringify({
+                body: $(`#post-body-${editId}`).val(),
             }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
         .then(response => {
             // Handle the response as needed
             console.log(response);
@@ -17,7 +21,8 @@
             // Handle errors
             console.error('Error:', error);
         });
-    }
+});
+
 
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.edit-view').forEach(editView => {
@@ -27,48 +32,43 @@ document.addEventListener('DOMContentLoaded', function () {
         postView.style.display = 'block';
     });
 
-    document.querySelectorAll('button').forEach(button => {
-        button.onclick = function(event) {
-            event.preventDefault();
-            var postId = button.getAttribute('data-id');
-            var currentLikes = parseInt(document.querySelector('.current-likes').innerHTML);
 
-            fetch(`/like/${postId}`, {
-                method: 'PUT',
-                body: JSON.stringify({
-                    likes: currentLikes + 1
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+});
+
+
+$('.like-button').on("click", function (event) {
+    var likeId = $(this).attr("data-like");
+    event.preventDefault();
+    var currentLikes = parseInt(document.querySelector('.current-likes').innerHTML);
+
+    fetch(`/like/${likeId}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            likes: currentLikes + 1
+        }),
+        headers: {
+            'Content-Type': 'application/json'
         }
-    });
+    })
+        .then(response => {
+            console.log(response);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 
-    var postId;
-    // Function to show form and prepopulate field with old post
-    $("button").on("click", function () {
-        postId = $(this).attr("data-id");
-        document.querySelector(`#edit-view-${postId}`).style.display = 'block';
-        document.querySelector(`#post-view-${postId}`).style.display = 'none';
-        fetch(`/edit/${postId}`)
-            .then(response => response.json())
-            .then(post => {
-                $(`#post-body-${postId}`).text(post.body);
-            });
-    });
+});
 
 
+// Function to show form and prepopulate field with old post
+$('.edit-post').on("click", function () {
+    var editId = $(this).attr("data-id");
+    document.querySelector(`#edit-view-${editId}`).style.display = 'block';
+    document.querySelector(`#post-view-${editId}`).style.display = 'none';
+    fetch(`/edit/${editId}`)
+        .then(response => response.json())
+        .then(post => {
+            $(`#post-body-${editId}`).text(post.body);
 
-    // Event binding for edit form
-    $(`#edit-form${postId}`).on("submit", function (event) {
-        event.preventDefault();
-        editPost(postId);
-    });
+        })
 });

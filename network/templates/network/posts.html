@@ -11,12 +11,13 @@
         
     </blockquote>
     {% if post.user|stringformat:"s" == request.user.username %}
-        <div class="edit-view" id="edit-view-{{ post.id }}">
-            <form id="edit-form-{{ post.id }}" action="{% url 'edit' post.id %}" method="PUT">
+        <div class="edit-view" method="POST" id="edit-view-{{ post.id }}">
+            <form class="edit-form" id="edit-form-{{ post.id }}" action="{% url 'edit' post.id %}" >
+                {% csrf_token %}
                 <div class="form-group">
                     <textarea class="form-control" name="" id="post-body-{{ post.id }}"></textarea>
                 </div>
-                <input id="edit-button-{{ post.id }}" class="btn btn-primary" type="submit" value="Post" name="save">
+                <button data-edit={{ post.id }} id="edit-button-{{ post.id }}" class="post-edit btn btn-primary" type="submit" value="Post" name="save">Post</button>
             </form>
         </div>
         {% endif %}
@@ -28,7 +29,7 @@
         <form class="like-form" method="POST" action="{% url 'like' post.id %}">
             {% csrf_token %}
             <!-- Your other form fields if any -->
-            <button data-id={{ post.id }} type="submit" class="like-button">❤️ <span class="current-likes">{{ post.likes }}</span></button>
+            <button data-like={{ post.id }} type="submit" class="like-button">❤️ <span class="current-likes">{{ post.likes }}</span></button>
         </form>
         {% else %}
         <div><span>❤️ {{ post.likes }}</span></div>
