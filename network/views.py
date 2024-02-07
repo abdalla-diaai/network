@@ -197,14 +197,6 @@ def view_following(request):
         },
     )
 
-# def like(request, post_id):
-#     posts = Post.objects.get(pk=post_id)
-#     if request.user not in posts.reactions.all():
-#         posts.reactions.add(request.user)
-#         posts.likes += 1
-#         posts.save()
-#     return HttpResponseRedirect(reverse("allposts"))
-
 @csrf_exempt       
 def like(request, post_id):
     try:
@@ -228,6 +220,29 @@ def like(request, post_id):
             return HttpResponse(status=204)
         else:
             return JsonResponse({"message": "already liked."}, status=201)
+
+    else:
+        return JsonResponse({
+            "error": "GET or PUT request required."
+        }, status=400)
+
+def edit(request, post_id):
+    try:
+        post = Post.objects.get(pk=post_id)
+        
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Post not found."}, status=404)
+
+    if request.method == "GET":
+        return JsonResponse(post.serialize())
+
+    elif request.method == "POST":
+        data = json.loads(request.body)
+        if data.get("body") is not None:
+            post.body = data["body"]
+            print(post.body)
+        post.save()
+        return HttpResponse(status=204)
 
     else:
         return JsonResponse({

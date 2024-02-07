@@ -18,13 +18,11 @@ class PostForm(StylishForm):
         fields = ["body"]
         widgets = {
             "owner": forms.HiddenInput(),
-            # adjust textarea field
         }
         # remove label field
         labels = {
             "body": " ",
         }
-
 
 class CommentForm(StylishForm):
     class Meta:

@@ -46,6 +46,7 @@ class Post(TimeStampedModel):
 
 
 
+
 class Comment(TimeStampedModel):
     comment_owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     comment_created = TimeStampedModel.created_at
