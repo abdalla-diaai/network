@@ -187,7 +187,6 @@ def comment(request, post_id):
     )
 
 @login_required
-
 def view_following(request):
     following = Follow.objects.filter(pk=request.user.id)
     return render(
@@ -200,11 +199,11 @@ def view_following(request):
     )
 
 @login_required
+@csrf_exempt
 def like(request, post_id):
     try:
         post = Post.objects.get(pk=post_id)
         
-
     except Post.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=404)
 
@@ -212,15 +211,18 @@ def like(request, post_id):
         return JsonResponse(post.serialize())
 
     elif request.method == "PUT":
-        if request.user not in post.reactions.all():
+        if request.user not in post.reactions.all() and request.user != request.user.username:
             post.reactions.add(request.user)
-
+            print(post.reactions.all)
             data = json.loads(request.body)
             if data.get("likes") is not None:
                 post.likes = data["likes"]
             post.save()
-            return HttpResponse(status=204)
+            return JsonResponse({"message": "Post successfully liked."})
+
         else:
+            print(post.reactions.all())
+
             return JsonResponse({"message": "already liked."}, status=201)
 
     else:
@@ -229,6 +231,7 @@ def like(request, post_id):
         }, status=400)
 
 @login_required
+@csrf_exempt
 def edit(request, post_id):
     try:
         post = Post.objects.get(pk=post_id)
@@ -244,8 +247,7 @@ def edit(request, post_id):
         if updated_body is not None:
             post.body = updated_body
         post.save()
-        return HttpResponse(status=204)
-
+        return JsonResponse({"message": "Post successfully updated."})
 
     else:
         return JsonResponse({

@@ -1,6 +1,5 @@
 // Edit post function
-$('.post-edit').on("click", function (event) {
-    event.preventDefault();
+$('.post-edit').on("click", function () {
 
     var editId = $(this).attr("data-edit");
     fetch(`/edit/${editId}`, {
@@ -10,17 +9,28 @@ $('.post-edit').on("click", function (event) {
                 body: $(`#post-body-${editId}`).val(),
             }),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         }
     })
-        .then(response => {
-            // Handle the response as needed
-            console.log(response);
-        })
-        .catch(error => {
-            // Handle errors
-            console.error('Error:', error);
-        });
+    .then(response => {
+        // Check if the response status is ok (2xx)
+        if (response.ok) {
+            // Parse the JSON response
+            return response.json();
+        } else {
+            // Handle error responses
+            console.error('Error:', response.statusText);
+            throw new Error('Failed to edit post');
+        }
+    })
+    .then(responseData => {
+        // Redirect to the desired URL
+        window.location.href = '/allposts';
+    })
+    .catch(error => {
+        // Handle errors
+        console.error('Error:', error);
+    });
 });
 
 
@@ -50,12 +60,25 @@ $('.like-button').on("click", function (event) {
             'Content-Type': 'application/json'
         }
     })
-        .then(response => {
-            console.log(response);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+    .then(response => {
+        // Check if the response status is ok (2xx)
+        if (response.ok) {
+            // Parse the JSON response
+            return response.json();
+        } else {
+            // Handle error responses
+            console.error('Error:', response.statusText);
+            throw new Error('Failed to edit post');
+        }
+    })
+    .then(responseData => {
+        // Redirect to the desired URL
+        window.location.href = '/allposts';
+    })
+    .catch(error => {
+        // Handle errors
+        console.error('Error:', error);
+    });
 
 });
 
