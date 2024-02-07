@@ -8,18 +8,18 @@
     {% for post in page_obj %}
     <blockquote class="blockquote post-view" id="post-view-{{ post.id }}">
         {{ post.body | linebreaks }}
-        
+
     </blockquote>
     {% if post.user|stringformat:"s" == request.user.username %}
-        <div class="edit-view" id="edit-view-{{ post.id }}">
-            <form class="edit-form" id="edit-form-{{ post.id }}" action="{% url 'edit' post.id %}">
-                <div class="form-group">
-                    <textarea class="form-control" name="" id="post-body-{{ post.id }}"></textarea>
-                </div>
-                <button data-edit={{ post.id }} id="edit-button-{{ post.id }}" class="post-edit btn btn-primary" type="submit" value="Post" name="save">Post</button>
-            </form>
-        </div>
-        {% endif %}
+    <div class="edit-view" id="edit-view-{{ post.id }}">
+        <form class="edit-form" id="edit-form-{{ post.id }}" action="{% url 'edit' post.id %}">
+            <div class="form-group">
+                <textarea class="form-control" name="" id="post-body-{{ post.id }}"></textarea>
+            </div>
+            <button data-edit={{ post.id }} id="edit-button-{{ post.id }}" class="post-edit btn btn-secondary btn-sm" type="submit" value="Post" name="save">Post</button>
+        </form>
+    </div>
+    {% endif %}
     <figcaption class="blockquote-footer">
         {{ post.created }}
         {{ post.user}}
@@ -31,10 +31,11 @@
         </form>
         {% else %}
         <div><span>❤️ {{ post.likes }}</span></div>
-        <button class="edit-post btn btn-primary btn-sm" data-id={{ post.id }} id="edit-button-{{ post.id }}">Edit</button>
-            
+        <button class="edit-post btn btn-secondary btn-sm" data-id={{ post.id }}
+            id="edit-button-{{ post.id }}">Edit</button>
+
         {% endif %}
-        
+
     </figcaption>
 
 
@@ -54,11 +55,9 @@
     <form action="{% url 'comment' post.id %}" , method="POST">
         {% csrf_token %}
         {% for field in form %}
-        <div class="form-text">
-            <div>{{ field }}</div>
-        </div>
+            <div class="form-group">{{ field }}</div>
         {% endfor %}
-        <input class="post-button" class="btn btn-primary btn-sm" type="submit" value="Comment" name="save">
+        <button class="post-button btn btn-secondary btn-sm" type="submit" value="Comment" name="save">Comment</button>
     </form>
     {% endif %}
     {% endfor %}

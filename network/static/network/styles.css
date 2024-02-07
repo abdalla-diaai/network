@@ -6,7 +6,7 @@
     margin: 5px 0 5px 0;
 }
 
-#post-button {
+button {
     margin: 10px 0 10px 0;
 }
 
@@ -15,8 +15,8 @@
     padding: 10px;
 }
 
-.comments {
-    margin: 20px;
+.comments, .blockquote, .blockquote-footer {
+    margin: 10px 0 10px 0 !important;
 }
 
 .card {
