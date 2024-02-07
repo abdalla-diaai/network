@@ -41,20 +41,16 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.post-view').forEach(postView => {
         postView.style.display = 'block';
     });
-
-
 });
 
 
 $('.like-button').on("click", function (event) {
     var likeId = $(this).attr("data-like");
     event.preventDefault();
-    var currentLikes = parseInt(document.querySelector('.current-likes').innerHTML);
-
     fetch(`/like/${likeId}`, {
         method: 'PUT',
         body: JSON.stringify({
-            likes: currentLikes + 1
+            likes: parseInt($('.current-likes').text) + 1
         }),
         headers: {
             'Content-Type': 'application/json'
@@ -79,7 +75,6 @@ $('.like-button').on("click", function (event) {
         // Handle errors
         console.error('Error:', error);
     });
-
 });
 
 
@@ -92,6 +87,5 @@ $('.edit-post').on("click", function () {
         .then(response => response.json())
         .then(post => {
             $(`#post-body-${editId}`).text(post.body);
-
         })
 });
