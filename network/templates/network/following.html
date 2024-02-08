@@ -1,7 +1,10 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
 <h2>Followers Posts</h2>
+{% if user.is_authenticated %}
+
 {% for follow in following.all %}
 {% for user in follow.following.all %}
 
@@ -13,15 +16,19 @@
 <figcaption class="blockquote-footer">
     {{ post.created }}
     {{ post.user}}
+    <form class="like-form" method="PUT" action="{% url 'like' post.id %}">
+        <!-- Your other form fields if any -->
+        <button data-like={{ post.id }} type="submit" class="like-button">❤️ <span class="current-likes">{{ post.likes }}</span></button>
+    </form>
 </figcaption>
-{% if post.user|stringformat:"s" != request.user.username %}
-<a class="likes" href="{% url 'like' post.id %}">❤️{{ post.likes }}</a>
-{% else %}
-<a class="likes" href="#">❤️{{ post.likes }}</a>
-{% endif %}
 {% endif %}
 {% endfor %}
 {% endfor %}
 {% endfor %}
+{% endif %}
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="{% static 'network/script.js' %}"></script>
 
+{% endblock %}
 {% endblock %}
