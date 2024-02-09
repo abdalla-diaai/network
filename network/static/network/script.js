@@ -25,6 +25,7 @@ $('.post-edit').on("click", function () {
     })
     .then(responseData => {
         // Redirect to the desired URL
+        console.log(responseData);
         window.location.href = '/allposts';
     })
     .catch(error => {

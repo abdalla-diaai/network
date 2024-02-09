@@ -164,7 +164,8 @@ def view_profile(request, user_id):
 @login_required
 def comment(request, post_id):
     post = Post.objects.get(pk=post_id)
-    comment, __ = Comment.objects.get_or_create(pk=post_id)
+    comment = Comment.objects.filter(pk=post_id)
+
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
