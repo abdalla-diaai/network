@@ -14,10 +14,17 @@ from .forms import *
 
 def index(request):
     posts = Post.objects.order_by("-created_at")
+    paginator = Paginator(posts, 10)  
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
     return render(
         request,
         "network/index.html",
-        {"posts": posts, "form": PostForm()},
+        {"posts": posts, 
+         "form": PostForm(),
+         "page_obj": page_obj,
+         "paginator": paginator, 
+         },
     )
 
 
@@ -113,13 +120,21 @@ def allposts(request):
 
 @login_required
 def profile(request):
-    posts = Post.objects.all()
+    posts = Post.objects.all().order_by("-created_at")
     current_users = User.objects.exclude(pk=request.user.id)
     user_following, __ = Follow.objects.get_or_create(pk=request.user.id)
+    paginator = Paginator(posts, 10)  
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
     return render(
         request,
         "network/profile.html",
-        {"all_users": current_users, "posts": posts, "following": user_following},
+        {"all_users": current_users, 
+         "posts": posts, 
+         "following": user_following,
+         "page_obj": page_obj,
+         "paginator": paginator
+         }
     )
 
 
@@ -164,7 +179,8 @@ def view_profile(request, user_id):
 @login_required
 def comment(request, post_id):
     post = Post.objects.get(pk=post_id)
-    comment, __ = Comment.objects.get_or_create(pk=post_id)
+    comment = Comment.objects.filter(pk=post_id)
+
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
