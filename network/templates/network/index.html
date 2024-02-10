@@ -17,7 +17,8 @@
     <h4>All Posts</h4>
     <div class="row card-body">
         <!-- posts -->
-        {% for post in posts.all %}
+        {% for post in page_obj %}
+
         <div class="comment">
             <blockquote class="blockquote">
                 {{ post.body | linebreaks }}
@@ -30,6 +31,28 @@
             {% endfor %}
         </div>
     </div>
+    {% if paginator.count > 0 %}
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        </li>
+        {% endif %}
+
+        {% for page_number in paginator.page_range %}
+        {% if page.obj.number == page_number %}
+
+        <li class="page-item active"><a class="page-link" href="">{{ page_number }}</a></li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a></li>
+        {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
 </section>
 {% endif %}
 {% endblock %}
