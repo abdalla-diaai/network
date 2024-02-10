@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
 $('.like-button').on("click", function (event) {
     var likeId = $(this).attr("data-like");
     event.preventDefault();
-    var currentLikes = parseInt(document.querySelector('.current-likes').innerHTML);
+    var currentLikes = parseInt(document.querySelector(`#current-likes-${likeId}`).innerHTML);
 
     fetch(`/like/${likeId}`, {
         method: 'PUT',

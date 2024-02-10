@@ -1,4 +1,5 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
 <h2>All Posts</h2>
@@ -21,14 +22,21 @@
         {{ post.user}}
     </figcaption>
     {% if post.user|stringformat:"s" != request.user.username %}
-    <a class="likes" href="{% url 'like' post.id %}">❤️{{ post.likes }}</a>
+    <form class="like-form" method="PUT" action="{% url 'like' post.id %}">
+        <!-- Your other form fields if any -->
+        <button data-like={{ post.id }} type="submit" class="like-button">❤️ <span class="current-likes">{{ post.likes }}</span></button>
+    </form>
     {% else %}
-    <a class="likes" href="#">❤️{{ post.likes }}</a>
+    <div><span>❤️ {{ post.likes }}</span></div>
     {% endif %}
     {% endif %}
     {% endfor %}
 </div>
 
 {% endif %}
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="{% static 'network/script.js' %}"></script>
 
+{% endblock %}
 {% endblock %}

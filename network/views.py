@@ -229,7 +229,6 @@ def like(request, post_id):
     elif request.method == "PUT":
         if request.user not in post.reactions.all() and request.user != request.user.username:
             post.reactions.add(request.user)
-            print(post.reactions.all)
             data = json.loads(request.body)
             if data.get("likes") is not None:
                 post.likes = data["likes"]
@@ -237,8 +236,6 @@ def like(request, post_id):
             return JsonResponse({"message": "Post successfully liked."})
 
         else:
-            print(post.reactions.all())
-
             return JsonResponse({"message": "already liked."}, status=201)
 
     else:

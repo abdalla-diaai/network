@@ -18,7 +18,7 @@
 
         <form class="like-form" action="{% url 'like' post.id %}">
             <!-- Your other form fields if any -->
-            <button data-like={{ post.id }} type="submit" class="like-button">❤️ <span class="current-likes">{{ post.likes }}</span></button>
+            <button data-like={{ post.id }} type="submit" class="like-button">❤️ <span id="current-likes-{{ post.id }}">{{ post.likes }}</span></button>
         </form>
         {% else %}
         <div><span>❤️ {{ post.likes }}</span></div>
