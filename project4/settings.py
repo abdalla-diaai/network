@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '13kl@xtukpwe&xj2xoysxe9_6=tf@f8ewxer5n&ifnd46+6$%8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # settings.py
 ALLOWED_HOSTS = ['*']
@@ -73,6 +73,12 @@ WSGI_APPLICATION = 'project4.wsgi.app'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+if ON_VERCEL:
+    DATABASE_URL = 'postgresql://<postgresql>'
+else:
+    DATABASE_URL = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
+
+DATABASES = {'default': dj_database_url.config(default=DATABASE_URL)}
 
 AUTH_USER_MODEL = "network.User"
 
